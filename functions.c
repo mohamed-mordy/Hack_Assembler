@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdbool.h>
 #include<ctype.h>
 #include<string.h>
 #include<stdlib.h>
@@ -58,24 +59,6 @@ list_g* green_code_loader(const char* filename)
 	return head_2_return;
 }
 
-// print_list function: prints the list, used for testing purposes
-// input: pointer to the head of the list
-// output: void, only side effects
-void print_green(const list_g* head)
-{
-	while(head != NULL)
-	{
-		int i = 0;
-		printf("%d ", head -> line_no_green);
-		while(1)
-		{
-			printf("%c", head -> line[i]);
-			if((head -> line[i]) == '\n') break;
-			i++;
-		}
-		head = head -> next;
-	}
-}
 
 list_p* pure_code_builder(list_g* green_head)
 {
@@ -138,20 +121,6 @@ list_p* pure_code_builder(list_g* green_head)
 		pure_head -> next = NULL;
 	}
 	return pure_head_2_return;
-}
-
-void print_pure(const list_p* head)
-{
-	while(head != NULL)
-	{
-		printf("%d", head -> line_no_green);
-		printf("\t");
-		printf("%d", head -> line_no_pure);
-		printf("\t");
-		printf("%s", head -> line);
-		printf("\n");
-		head = head -> next;
-	}
 }
 
 void error(void)
@@ -268,14 +237,6 @@ list_st* initialize_st(void)
 	return head_st_2_return;
 }
 
-void print_st(list_st* head)
-{
-	while(head != NULL)
-	{
-		printf("%s\t%d\n", head -> record.symbol, head -> record.value);
-		head = head -> next;
-	}
-}
 
 list_st* add_2_st(pair this, list_st* head)
 {
@@ -288,5 +249,73 @@ list_st* add_2_st(pair this, list_st* head)
 	return head;
 }
 
+bool search_st(pair this,const list_st* head)
+{
+	if(head == NULL) error();
+	while(head != NULL)
+	{
+		if(head -> record == this)
+		{
+			return true;
+		}
+		else
+		{
+			head = head -> next;
+		}
+	}
+	return false;
+}
 
+char* substring(const char* label, int from , int to)
+{
+	if(strlen(label) > 50) error();
+	char  sub_label[50];
+	int j = 0;
+	for(int i = from, i <= to, i++)
+	{
+		sub_label[j] = label[i];
+		j++;
+	}
+	return sub_label;
+}
+
+list_e* mid_exact_code(list_p* head_p, list_st* head_st)
+{
+	if(head_p == NULL || head_st == NULL) error();
+	list_e* head_e = malloc(sizeof(list_e));
+	pair tmp_pair;
+
+	while(head_p != NULL)
+	{
+		if(head_p->line[0] == '(' && head_p->line[strlen(head_p->line)-1] == ')')
+		{
+			char* lbl_ptr = 
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+list_e* exact_code_builder(list_p* head_p, list_st* head_st)
+{
+	list_e* head_e = malloc(sizeof(list_e));
+	pair tmp_pair;
+	while(1)
+	{
+		if(head_p -> line[0] == '@')
+		{
+			strcpy(head_e -> )
+		}
+	}
+}
 
