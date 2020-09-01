@@ -15,15 +15,15 @@
  */	
 
 /**********************************Preprocessor directives section*********************************/
-#include<stdio.h>
-#include<stdlib.h>
-#include"functions.h"
-
 /*******************************Global variables declarations section******************************/
 /**************************************ADT declarations section************************************/
 /***********************************Functions declarations section*********************************/
 
 /*********************************fucntions implementations section********************************/
+#include<stdio.h>
+#include<stdlib.h>
+#include"functions.h"
+
 // main function: Mandatory for any C code to be executable
 int main(int argc, char* argv[])
 {
@@ -31,8 +31,14 @@ int main(int argc, char* argv[])
 		printf("Usage: assembler *.asm\n");
 		exit(1);
 	}
-	list* my_file_green = load(argv[1]);
-	print_list(my_file_green);
+	list_g* green_code = green_code_loader(argv[1]);
+	print_green(green_code);
+	list_p* pure_code = pure_code_builder(green_code);
+	drop_g(green_code);
+	print_pure(pure_code);
+	drop_p(pure_code);
+	list_st* symbol_table = initialize_st();
+	print_st(symbol_table);
 	return 0;
 }
 
