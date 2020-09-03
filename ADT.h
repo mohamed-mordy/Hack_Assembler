@@ -1,14 +1,14 @@
 #include<stdio.h>
 
 typedef struct list_g{
-	char line[500];
+	char line[100];
 	int line_no_green;
 	struct list_g* next;
 	struct list_g* previous;
 }list_g;
 
 typedef struct list_p{
-	char line[500];
+	char line[100];
 	int line_no_green;
 	int line_no_pure;
 	struct list_p* next;
@@ -17,7 +17,7 @@ typedef struct list_p{
 
 
 typedef struct list_e{
-	char line[500];
+	char line[100];
 	int line_no_green;
 	int line_no_exact;
 	struct list_e* next;
@@ -25,7 +25,7 @@ typedef struct list_e{
 }list_e;
 
 typedef struct pair{
-	char symbol[20];
+	char symbol[50];
 	int value;
 }pair;
 
@@ -35,3 +35,12 @@ typedef struct list_st{
 	struct list_st* previous;
 }list_st;
 
+typedef struct{
+	char assembly[20];
+	char machine[10];
+}translation;
+
+typedef struct dictionary{
+	translation word;
+	struct dictionary* next;
+}dictionary;
