@@ -24,6 +24,7 @@ typedef struct list_e{
 	struct list_e* previous;
 }list_e;
 
+// ADT implementations for the symbol table
 typedef struct pair{
 	char symbol[50];
 	int value;
@@ -35,6 +36,7 @@ typedef struct list_st{
 	struct list_st* previous;
 }list_st;
 
+// ADT implementations for the language syntax
 typedef struct{
 	char assembly[20];
 	char machine[10];

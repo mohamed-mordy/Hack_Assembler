@@ -16,7 +16,7 @@ list_g* green_code_loader(const char* filename)
 	list_g* head = malloc(sizeof(list_g));
 	list_g* head_2_return = head; // this is a copy of "head" to return it later
 	head -> previous = NULL;
-	int lineNumber = 0; // keep track of the number of each line
+	int lineNumber = 1; // keep track of the number of each line
 	while(1)                    
 	{
         int m = 0; // This is used to BRAKE the loop
@@ -118,12 +118,121 @@ list_p* pure_code_builder(list_g* green_head)
 	return pure_head_2_return;
 }
 
+list_e* mid_exact_code(list_p* head_p, list_st* head_st)
+{
+	if(head_p == NULL || head_st == NULL) error();
+	list_e* head_e = malloc(sizeof(list_e));
+	list_e* head_e_2_return = head_e;
+	head_e->previous = NULL;
+	pair tmp_pair;
+	int exact_code_line_number = 0;
+
+	while(head_p != NULL)
+	{
+		if((head_p->line[0] == '(') && (head_p->line[strlen(head_p->line)-1] == ')'))
+		{
+			int i = strlen(head_p->line);
+			substring(tmp_pair.symbol, head_p->line, 1, i-2);
+			tmp_pair.value = exact_code_line_number;
+			add_2_st(tmp_pair, head_st);
+			head_p = head_p->next;
+		}
+		else
+		{
+			strcpy(head_e->line, head_p->line);
+			head_e->line_no_green = head_p->line_no_green;
+			head_e->line_no_exact = exact_code_line_number;
+			exact_code_line_number++;
+			head_p = head_p->next;
+			head_e->next = malloc(sizeof(list_e));
+			list_e* tmp = head_e;
+			head_e = head_e->next;
+			head_e->previous = tmp;
+		}
+	}
+
+	if(head_e->line_no_exact == 0)
+	{
+		head_e = head_e->previous;
+		free(head_e->next);
+		head_e->next = NULL;
+	}
+	return head_e_2_return;
+}
+
+list_e* exact_code_builder(list_e* head, list_st* head_st)
+{
+	list_e* head_e = malloc(sizeof(list_e));
+	list_e* head_e_2_return = head_e;
+	pair tmp_pair;
+	int mem_count = 16;
+
+	while(head != NULL)
+	{
+		if((head->line[0] == '@')&&(isalpha(head->line[1])))
+		{
+			int i = strlen(head->line);
+			char buffer[50];
+			substring(buffer, head->line, 1, i-1);
+			strcpy(tmp_pair.symbol, buffer);
+			if(search_st(tmp_pair.symbol, head_st))
+			{
+				tmp_pair.value = get_value(tmp_pair.symbol, head_st);
+				head_e->line_no_green = head->line_no_green;
+				head_e->line_no_exact = head->line_no_exact;
+				sprintf(head_e->line, "@%d",tmp_pair.value);
+				head = head->next;
+				head_e->next = malloc(sizeof(list_e));
+				list_e* tmp = head_e;
+				head_e = head_e->next;
+				head_e->previous = tmp;
+			}
+			else
+			{
+				tmp_pair.value = mem_count;
+				mem_count++;
+				add_2_st(tmp_pair, head_st);
+				head_e->line_no_green = head->line_no_green;
+				head_e->line_no_exact = head->line_no_exact;
+				sprintf(head_e->line, "@%d",tmp_pair.value);
+				head = head->next;
+				head_e->next = malloc(sizeof(list_e));
+				list_e* tmp = head_e;
+				head_e = head_e->next;
+				head_e->previous = tmp;
+			}
+		}
+		else
+		{
+			strcpy(head_e->line, head->line);
+			head_e->line_no_green = head->line_no_green;
+			head_e->line_no_exact = head->line_no_exact;
+			head = head->next;
+			head_e->next = malloc(sizeof(list_e));
+			list_e* tmp = head_e;
+			head_e = head_e->next;
+			head_e->previous = tmp;
+		}
+	}
+
+	//if((head_e->line_no_exact) == 0 || (head_e->line_no_green) == 0)
+	while((head_e->line_no_exact) == 0 || (head_e->line_no_green) == 0)
+	{
+		head_e = head_e->previous;
+		free(head_e->next);
+		head_e->next = NULL;
+	}
+
+	return head_e_2_return;
+}
+
 void error(void)
 {
 	printf("undefined error\n");
 	exit(1);
 }
 
+// drop functions, its main purpose is to clean the memory before quitting
 void drop_g(list_g* head_g)
 {
 	if(head_g == NULL) error();
@@ -177,6 +286,17 @@ void drop_dict(dictionary* head)
 		free(head);
 		head = tmp;
 	}
+}
+
+void substring(char* dst, const char* src, int from , int to)
+{
+	int j = 0;
+	for(int i = from; i <= to; i++)
+	{
+		dst[j] = src[i];
+		j++;
+	}
+	dst[j] = '\0';
 }
 
 list_st* initialize_st(void)
@@ -266,59 +386,6 @@ void add_2_st(pair this, list_st* head)
 	tmp1->previous = tmp2;
 }
 
-void substring(char* dst, const char* src, int from , int to)
-{
-	int j = 0;
-	for(int i = from; i <= to; i++)
-	{
-		dst[j] = src[i];
-		j++;
-	}
-	dst[j] = '\0';
-}
-
-list_e* mid_exact_code(list_p* head_p, list_st* head_st)
-{
-	if(head_p == NULL || head_st == NULL) error();
-	list_e* head_e = malloc(sizeof(list_e));
-	list_e* head_e_2_return = head_e;
-	head_e->previous = NULL;
-	pair tmp_pair;
-	int exact_code_line_number = 0;
-
-	while(head_p != NULL)
-	{
-		if((head_p->line[0] == '(') && (head_p->line[strlen(head_p->line)-1] == ')'))
-		{
-			int i = strlen(head_p->line);
-			substring(tmp_pair.symbol, head_p->line, 1, i-2);
-			tmp_pair.value = exact_code_line_number;
-			add_2_st(tmp_pair, head_st);
-			head_p = head_p->next;
-		}
-		else
-		{
-			strcpy(head_e->line, head_p->line);
-			head_e->line_no_green = head_p->line_no_green;
-			head_e->line_no_exact = exact_code_line_number;
-			exact_code_line_number++;
-			head_p = head_p->next;
-			head_e->next = malloc(sizeof(list_e));
-			list_e* tmp = head_e;
-			head_e = head_e->next;
-			head_e->previous = tmp;
-		}
-	}
-
-	if(head_e->line_no_exact == 0)
-	{
-		head_e = head_e->previous;
-		free(head_e->next);
-		head_e->next = NULL;
-	}
-	return head_e_2_return;
-}
-
 _Bool search_st(char* this, list_st* head_st)
 {
 	if(head_st == NULL) error();
@@ -344,71 +411,6 @@ int get_value(char* this, list_st* head_st) // from the symbol table
 		}
 		head_st = head_st -> next;
 	}
-}
-
-list_e* exact_code_builder(list_e* head, list_st* head_st)
-{
-	list_e* head_e = malloc(sizeof(list_e));
-	list_e* head_e_2_return = head_e;
-	pair tmp_pair;
-	int mem_count = 16;
-
-	while(head != NULL)
-	{
-		if((head->line[0] == '@')&&(isalpha(head->line[1])))
-		{
-			int i = strlen(head->line);
-			char buffer[50];
-			substring(buffer, head->line, 1, i-1);
-			strcpy(tmp_pair.symbol, buffer);
-			if(search_st(tmp_pair.symbol, head_st))
-			{
-				tmp_pair.value = get_value(tmp_pair.symbol, head_st);
-				head_e->line_no_green = head->line_no_green;
-				head_e->line_no_exact = head->line_no_exact;
-				sprintf(head_e->line, "@%d",tmp_pair.value);
-				head = head->next;
-				head_e->next = malloc(sizeof(list_e));
-				list_e* tmp = head_e;
-				head_e = head_e->next;
-				head_e->previous = tmp;
-			}
-			else
-			{
-				tmp_pair.value = mem_count;
-				mem_count++;
-				add_2_st(tmp_pair, head_st);
-				head_e->line_no_green = head->line_no_green;
-				head_e->line_no_exact = head->line_no_exact;
-				sprintf(head_e->line, "@%d",tmp_pair.value);
-				head = head->next;
-				head_e->next = malloc(sizeof(list_e));
-				list_e* tmp = head_e;
-				head_e = head_e->next;
-				head_e->previous = tmp;
-			}
-		}
-		else
-		{
-			strcpy(head_e->line, head->line);
-			head_e->line_no_green = head->line_no_green;
-			head_e->line_no_exact = head->line_no_exact;
-			head = head->next;
-			head_e->next = malloc(sizeof(list_e));
-			list_e* tmp = head_e;
-			head_e = head_e->next;
-			head_e->previous = tmp;
-		}
-	}
-
-	if(head_e->line_no_exact == 0)
-	{
-		head_e = head_e->previous;
-		free(head_e->next);
-		head_e->next = NULL;
-	}
-
-	return head_e_2_return;
 }
 
 void translater(list_e* head, dictionary* head_comp, dictionary* head_dest, dictionary* head_jump)
@@ -502,6 +504,7 @@ void check_translation(char* this, int that)
 	}
 }
 
+// initialize dict of the different language syntax rules
 dictionary* initialize_dict_dest(void)
 {
 	dictionary* this = malloc(sizeof(dictionary));
@@ -802,10 +805,10 @@ void print_exact(const list_e* head)
 {
 	while(head != NULL)
 	{
-		//printf("%d", head -> line_no_green);
-		//printf("\t");
-		//printf("%d", head -> line_no_exact);
-		//printf("\t");
+		printf("%d", head -> line_no_green);
+		printf("\t");
+		printf("%d", head -> line_no_exact);
+		printf("\t");
 		printf("%s", head -> line);
 		printf("\n");
 		head = head -> next;
