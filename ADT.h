@@ -36,13 +36,3 @@ typedef struct list_st{
 	struct list_st* previous;
 }list_st;
 
-// ADT implementations for the language syntax
-typedef struct{
-	char assembly[20];
-	char machine[10];
-}translation;
-
-typedef struct dictionary{
-	translation word;
-	struct dictionary* next;
-}dictionary;

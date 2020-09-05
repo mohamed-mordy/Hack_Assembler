@@ -60,20 +60,12 @@ int main(int argc, char* argv[])
 
 //	printf("exact code is done...\n");
 
-//	printf("initialize dictionaries...\n");
-	dictionary* head_dest = initialize_dict_dest();
-	dictionary* head_comp = initialize_dict_comp();
-	dictionary* head_jump = initialize_dict_jump();
 
-//	printf(" here, before translation?????\n");
 
 //	printf("start code translation process...\n");
 
-	translater(exact_code, head_comp, head_dest, head_jump);
+	translater(exact_code);
 
-	drop_dict(head_dest);
-	drop_dict(head_comp);
-	drop_dict(head_jump);
 //	print_exact(exact_code);
 //	printf("code translation is done successfully...\n");
 

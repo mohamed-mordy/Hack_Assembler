@@ -4,6 +4,7 @@
 #include<stdbool.h>
 #include<stdlib.h>
 #include"functions.h"
+#include"dict.h"
 
 list_g* green_code_loader(const char* filename)
 {
@@ -277,17 +278,6 @@ void drop_st(list_st* head_st)
 	}
 }
 
-void drop_dict(dictionary* head)
-{
-	if(head == NULL) error();
-	while(head != NULL)
-	{
-		dictionary* tmp = head -> next;
-		free(head);
-		head = tmp;
-	}
-}
-
 void substring(char* dst, const char* src, int from , int to)
 {
 	int j = 0;
@@ -413,7 +403,7 @@ int get_value(char* this, list_st* head_st) // from the symbol table
 	}
 }
 
-void translater(list_e* head, dictionary* head_comp, dictionary* head_dest, dictionary* head_jump)
+void translater(list_e* head)
 {
 	if(head == NULL) error();
 
@@ -471,273 +461,15 @@ void translater(list_e* head, dictionary* head_comp, dictionary* head_dest, dict
 				exit(1);
 			}
 
-			strcpy(comp, get_translation(comp, head_comp));// check_translation(comp, head->line_no_green);
-			strcpy(dest, get_translation(dest, head_dest));// check_translation(dest, head->line_no_green);
-			strcpy(jump, get_translation(jump, head_jump));// check_translation(jump, head->line_no_green);
+			get_comp(comp, head->line_no_green);
+			get_dest(dest, head->line_no_green);
+			get_jump(jump, head->line_no_green);
+
 			sprintf(head->line,"111%s%s%s", comp, dest, jump);
 		}
 
 		head = head->next;
 	}
-}
-
-char* get_translation(char* this, dictionary* head)
-{
-	while(head != NULL)
-	{
-		if(!strcmp(this, head->word.assembly))
-		{
-			this = head->word.machine;
-			return this;
-		}
-		head = head -> next;
-	}
-}
-
-void check_translation(char* this, int that)
-{
-	if(!isdigit(this[0]))
-	{
-		printf("syntax error\n");
-		printf("check line %d", that);
-		exit(1);
-	}
-}
-
-// initialize dict of the different language syntax rules
-dictionary* initialize_dict_dest(void)
-{
-	dictionary* this = malloc(sizeof(dictionary));
-	this->next = NULL;
-	strcpy(this->word.assembly, "null\0");
-	strcpy(this->word.machine , "000\0");
-
-	dictionary* that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "M\0");
-	strcpy(that->word.machine, "001\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D\0");
-	strcpy(this->word.machine, "010\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "MD\0");
-	strcpy(that->word.machine, "011\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "A\0");
-	strcpy(this->word.machine, "100\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "AM\0");
-	strcpy(that->word.machine, "101\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "AD\0");
-	strcpy(this->word.machine, "110\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "AMD\0");
-	strcpy(that->word.machine, "111\0");
-
-	return that;
-}
-
-dictionary* initialize_dict_comp(void)
-{
-	dictionary* that = malloc(sizeof(dictionary));
-	that->next = NULL;
-	strcpy(that->word.assembly, "0\0");
-	strcpy(that->word.machine, "0101010\0");
-
-	dictionary* this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "1\0");
-	strcpy(this->word.machine, "0111111\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "-1\0");
-	strcpy(that->word.machine, "0111010\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D\0");
-	strcpy(this->word.machine, "0001100\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "A\0");
-	strcpy(that->word.machine, "0110000\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "M\0");
-	strcpy(this->word.machine, "1110000\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "!D\0");
-	strcpy(that->word.machine, "0001101\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "!A\0");
-	strcpy(this->word.machine, "0110011\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "!M\0");
-	strcpy(that->word.machine, "1110001\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "A+1\0");
-	strcpy(this->word.machine, "0110111\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "-D\0");
-	strcpy(that->word.machine, "0001111\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "-A\0");
-	strcpy(this->word.machine, "0110011\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "-M\0");
-	strcpy(that->word.machine, "1110011\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D+1\0");
-	strcpy(this->word.machine, "0011111\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "M+1\0");
-	strcpy(that->word.machine, "1110111\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D-1\0");
-	strcpy(this->word.machine, "0001110\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "A-1\0");
-	strcpy(that->word.machine, "0110010\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "M-1\0");
-	strcpy(this->word.machine, "1110010\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "D+A\0");
-	strcpy(that->word.machine, "0000010\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D+M\0");
-	strcpy(this->word.machine, "1000010\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "D-A\0");
-	strcpy(that->word.machine, "0010011\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D-M\0");
-	strcpy(this->word.machine, "1010011\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "A-D\0");
-	strcpy(that->word.machine, "0000111\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "M-D\0");
-	strcpy(this->word.machine, "1000111\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "D&A\0");
-	strcpy(that->word.machine, "0000000\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D&M\0");
-	strcpy(this->word.machine, "1000000\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "D|A\0");
-	strcpy(that->word.machine, "0010101\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "D|M\0");
-	strcpy(this->word.machine, "1010101\0");
-	
-	return this;
-}
-
-dictionary* initialize_dict_jump(void)
-{
-	dictionary* that = malloc(sizeof(dictionary));
-	that->next = NULL;
-	strcpy(that->word.assembly, "null\0");
-	strcpy(that->word.machine , "000\0");
-
-	dictionary* this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "JGT\0");
-	strcpy(this->word.machine, "001\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "JEQ\0");
-	strcpy(that->word.machine, "010\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "JGE\0");
-	strcpy(this->word.machine, "011\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "JLT\0");
-	strcpy(that->word.machine, "100\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "JNE\0");
-	strcpy(this->word.machine, "101\0");
-
-	that = malloc(sizeof(dictionary));
-	that->next = this;
-	strcpy(that->word.assembly, "JLE\0");
-	strcpy(that->word.machine, "110\0");
-
-	this = malloc(sizeof(dictionary));
-	this->next = that;
-	strcpy(this->word.assembly, "JMP\0");
-	strcpy(this->word.machine, "111\0");
-	
-	return this;
 }
 
 void print_data(const list_e* head, const char* input_file)
@@ -821,15 +553,6 @@ void print_st(const list_st* head)
 	{
 		printf("%s\t%d\n", head -> record.symbol, head -> record.value);
 		head = head -> next;
-	}
-}
-
-void print_dict(const dictionary* head)
-{
-	while(head != NULL)
-	{
-		printf("%s\t %s\n", head->word.assembly, head->word.machine);
-		head = head->next;
 	}
 }
 
