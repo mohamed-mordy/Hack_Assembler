@@ -1,15 +1,20 @@
 # This is a comment
 
-#out: assembler.c functions.o
-#	gcc -o out assembler.c functions.o
-#
-#functions.o: functions.c dict.o
-#	gcc -c functions.c dict.o
-#
-#dict.o: dict.c
-#	gcc -c dict.c
-#
-#
+objects = assembler.o functions.o dict.o
 
-out: assembler.c functions.c dict.c
-	gcc -o out assembler.c functions.c dict.c
+out: $(objects)
+	gcc -o out $(objects)
+
+assembler.o: assembler.c functions.h
+	gcc -c assembler.c
+
+functions.o: functions.c functions.h dict.h
+	gcc -c functions.c
+
+dict.o: dict.c dict.h
+	gcc -c dict.c
+
+
+.PHONY: clean
+clean:
+	rm *.hack *.o *.exe

@@ -31,13 +31,13 @@ int main(int argc, char* argv[])
 
 //	printf("start green_code loading into memory...\n");
 	list_g* green_code = green_code_loader(argv[1]);
-	print_green(green_code);                                               // testing purposes
-	printf("\n\n\n");
+//	print_green(green_code);                                               // testing purposes
+//	printf("\n\n\n");
 
 //	printf("start pure_code generation...\n");
 	list_p* pure_code = pure_code_builder(green_code);
-	print_pure(pure_code);                                              // testing puroses
-	printf("\n\n\n");
+//	print_pure(pure_code);                                              // testing puroses
+//	printf("\n\n\n");
 
 	drop_g(green_code);
 
@@ -47,13 +47,13 @@ int main(int argc, char* argv[])
 //	printf("start mid_exact_code_builder...\n");
 	list_e* exact_code_mid = mid_exact_code(pure_code, symbol_table);
 
-	print_exact(exact_code_mid);                                            // testing purposes
-	printf("\n\n\n");
+//	print_exact(exact_code_mid);                                            // testing purposes
+//	printf("\n\n\n");
 	drop_p(pure_code);
 //	printf("start exact_code_builder...\n");
 	list_e* exact_code = exact_code_builder(exact_code_mid, symbol_table);
-	print_exact(exact_code_mid);                                            // testing purposes
-	printf("\n\n\n");
+//	print_exact(exact_code_mid);                                            // testing purposes
+//	printf("\n\n\n");
 
 	drop_e(exact_code_mid);
 	drop_st(symbol_table);
@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
 	print_data(exact_code, argv[1]);
 
 	drop_e(exact_code);
+	printf("Done successfully\ncheck output\n");
 //	printf("print the machine code \n");
 //	printf("\n\n\n");
 	return 0;

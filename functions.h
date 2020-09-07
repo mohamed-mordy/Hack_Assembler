@@ -10,7 +10,7 @@ void drop_e(list_e* head_e);
 void drop_st(list_st* head_st);
 list_st* initialize_st(void);
 void add_2_st(pair this, list_st* head);
-void substring(char* dst, const char* src, int from , int to);
+static void substring(char* dst, const char* src, int from , int to);
 list_e* mid_exact_code(list_p* head_p, list_st* head_st);
 _Bool search_st(char* this, list_st* head_st);
 int get_value(char* this, list_st* head_st);

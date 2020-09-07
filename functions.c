@@ -9,18 +9,20 @@
 list_g* green_code_loader(const char* filename)
 {
 	FILE* fptr = fopen(filename, "r"); // open the file
+
 	if(fptr == NULL) // check the pointer, and make sure everything is ok
 	{
 		printf("error opening the file \n");
 		exit(1);
 	}
+
 	list_g* head = malloc(sizeof(list_g));
 	list_g* head_2_return = head; // this is a copy of "head" to return it later
 	head -> previous = NULL;
 	int lineNumber = 1; // keep track of the number of each line
 	while(1)                    
 	{
-        int m = 0; // This is used to BRAKE the loop
+		int m = 0; // This is used to BRAKE the loop
 		int i = 0; // This is to index the characters of each line
 		head -> line_no_green = lineNumber; // set the line number
 		while(1)
@@ -35,7 +37,7 @@ list_g* green_code_loader(const char* filename)
 			{
 				break;
 			}
-			
+
 			i++;
 		}
 
@@ -278,7 +280,7 @@ void drop_st(list_st* head_st)
 	}
 }
 
-void substring(char* dst, const char* src, int from , int to)
+static void substring(char* dst, const char* src, int from , int to)
 {
 	int j = 0;
 	for(int i = from; i <= to; i++)
@@ -315,7 +317,7 @@ list_st* initialize_st(void)
 		head_st -> previous = tmp;
 		j++;
 	}
-	
+
 	strcpy(head_st -> record.symbol, "SCREEN");
 	head_st -> record.value = 16384;
 	head_st -> next = malloc(sizeof(list_st));
@@ -366,7 +368,6 @@ list_st* initialize_st(void)
 
 void add_2_st(pair this, list_st* head)
 {
-
 	list_st* tmp1 = head->next;
 	head->next = malloc(sizeof(list_st));
 	list_st* tmp2 = head->next;
@@ -427,7 +428,7 @@ void translater(list_e* head)
 		}
 		else
 		{
-			
+
 			int len = strlen(head->line);
 			char dest[10]; char comp[10]; char jump[10];
 			int equal = 0; int scolon = 0;
