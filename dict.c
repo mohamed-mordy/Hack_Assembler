@@ -4,9 +4,9 @@
 typedef struct{
 	char assembly[20];
 	char machine[10];
-}translation;
+} translation;
 
-char* get_dest(char* this, int that)
+char *get_dest(char *this, int that)
 {
 	translation arr[] = {
 		{"null\0", "000\0"},
@@ -18,10 +18,8 @@ char* get_dest(char* this, int that)
 		{"AD\0", "110\0"},
 		{"AMD\0", "111\0"}
 	};
-	for(int i = 0; i < 8; i++)
-	{
-		if(!strcmp(this, arr[i].assembly))
-		{
+	for(int i = 0; i < 8; i++) {
+		if(!strcmp(this, arr[i].assembly)) {
 			strcpy(this, arr[i].machine);
 			return this;
 		}
@@ -30,7 +28,7 @@ char* get_dest(char* this, int that)
 	exit(1);
 }
 
-char* get_comp(char* this, int that)
+char *get_comp(char *this, int that)
 {
 	translation arr[] = {
 		{"0\0", "0101010\0"},
@@ -62,10 +60,8 @@ char* get_comp(char* this, int that)
 		{"D|A\0", "0010101\0"},
 		{"D|M\0", "1010101\0"}
 	};
-	for(int i = 0; i < 28; i++)
-	{
-		if(!strcmp(this, arr[i].assembly))
-		{
+	for(int i = 0; i < 28; i++) {
+		if(!strcmp(this, arr[i].assembly)) {
 			strcpy(this, arr[i].machine);
 			return this;
 		}
@@ -74,7 +70,7 @@ char* get_comp(char* this, int that)
 	exit(1);
 }
 
-char* get_jump(char* this, int that)
+char *get_jump(char *this, int that)
 {
 	translation arr[] ={
 		{"null\0", "000\0"},
@@ -86,10 +82,8 @@ char* get_jump(char* this, int that)
 		{"JLE\0", "110\0"},
 		{"JMP\0", "111\0"}
 	};
-	for(int i = 0; i < 8; i++)
-	{
-		if(!strcmp(this, arr[i].assembly))
-		{
+	for(int i = 0; i < 8; i++) {
+		if(!strcmp(this, arr[i].assembly)) {
 			strcpy(this, arr[i].machine);
 			return this;
 		}

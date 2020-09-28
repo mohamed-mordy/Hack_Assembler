@@ -2,8 +2,8 @@
 
 objects = assembler.o functions.o dict.o
 
-out: $(objects)
-	gcc -o out $(objects)
+asm: $(objects)
+	gcc -o asm $(objects); rm *.o;
 
 assembler.o: assembler.c functions.h
 	gcc -c assembler.c
